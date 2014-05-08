@@ -40,6 +40,20 @@ function packeryDefinition( LayoutMode, Packery ) {
   // PackeryMode.prototype.layout = layout;
   PackeryMode.prototype._getMeasurement = _getMeasurement;
 
+  // set packery in _resetLayout
+  var _resetLayout = PackeryMode.prototype._resetLayout;
+  PackeryMode.prototype._resetLayout = function() {
+    this.packer = this.packer || new Packery.Packer();
+    _resetLayout.apply( this, arguments );
+  };
+
+  var _getItemLayoutPosition = PackeryMode.prototype._getItemLayoutPosition;
+  PackeryMode.prototype._getItemLayoutPosition = function( item ) {
+    // set packery rect
+    item.rect = item.rect || new Packery.Rect();
+    return _getItemLayoutPosition.call( this, item );
+  };
+
   // HACK copy over isOriginLeft/Top options
   var _manageStamp = PackeryMode.prototype._manageStamp;
   PackeryMode.prototype._manageStamp = function() {
