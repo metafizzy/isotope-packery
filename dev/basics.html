@@ -15,12 +15,12 @@
     body {
       font-family: sans-serif;
     }
-    
+
     .container {
       background: #DDD;
       margin-bottom: 20px;
     }
-    
+
     .item {
       float: left;
       width: 50px;
@@ -33,6 +33,12 @@
     .item.h2 { height: 100px; }
     .item.w4 { width:  200px; }
     .item.h4 { height: 200px; }
+
+    #square-col-row2 .grid-sizer {
+      width: 70px;
+      height: 80px;
+    }
+
   </style>
 
 </head>
@@ -41,6 +47,85 @@
   <h1>basics</h1>
 
   <div id="square1" class="container">
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-gutter" class="container">
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row1" class="container">
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row2" class="container">
+    <div class="grid-sizer"></div>
     <div class="item w4"></div>
     <div class="item h4"></div>
     <div class="item w2"></div>
@@ -95,7 +180,37 @@ docReady( function() {
       layoutMode: 'packery'
     });
   })();
-  
+
+  ( function() {
+    new Isotope( '#square-gutter', {
+      layoutMode: 'packery',
+      packery: {
+        gutter: 10
+      }
+    });
+  })();
+
+  ( function() {
+    new Isotope( '#square-col-row1', {
+      layoutMode: 'packery',
+      packery: {
+        columnWidth: 60,
+        rowHeight: 60
+      }
+    });
+  })();
+
+  ( function() {
+    new Isotope( '#square-col-row2', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      packery: {
+        columnWidth: '.grid-sizer',
+        rowHeight: '.grid-sizer'
+      }
+    });
+  })();
+
 });
 </script>
 
