@@ -89,7 +89,8 @@ if ( typeof define === 'function' && define.amd ) {
   // browser global
   packeryDefinition(
     window.Isotope.LayoutMode,
-    window.Packery
+    window.Packery,
+    window.getSize
   );
 }
 
