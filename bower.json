@@ -18,6 +18,9 @@
     "isotope"
   ],
   "ignore": [
-    "dev/"
+    "**/.*",
+    "dev/",
+    "package.json",
+    "Gruntfile.js"
   ]
 }

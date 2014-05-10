@@ -81,7 +81,7 @@ if ( typeof define === 'function' && define.amd ) {
   // AMD
   define( [
       'isotope/js/layout-mode',
-      'packery/packery',
+      'packery/js/packery',
       'get-size/get-size'
     ],
     packeryDefinition );

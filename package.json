@@ -1,0 +1,31 @@
+{
+  "name": "isotope-packery",
+  "version": "0.0.1",
+  "description": "packery layout mode for Isotope",
+  "main": "packery-mode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/metafizzy/isotope-packery.git"
+  },
+  "keywords": [
+    "packery",
+    "layout",
+    "mode",
+    "isotope"
+  ],
+  "author": "David DeSandro / Metafizzy",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/metafizzy/isotope-packery/issues"
+  },
+  "homepage": "https://github.com/metafizzy/isotope-packery",
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-requirejs": "^0.4.2"
+  }
+}
