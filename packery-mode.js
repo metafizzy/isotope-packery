@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode
+ * Packery layout mode v0.1.0
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
