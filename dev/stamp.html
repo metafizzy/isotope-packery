@@ -1,0 +1,443 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>stamp</title>
+
+  <style>
+    * {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    .container {
+      position: relative;
+      background: #DDD;
+      margin-bottom: 20px;
+      counter-reset: item;
+    }
+
+    .container.horizontal {
+      height: 60%;
+    }
+
+    .item {
+      float: left;
+      width: 50px;
+      height: 50px;
+      border: 1px solid;
+      background: #59F;
+    }
+
+    .item:before {
+      counter-increment: item;
+      content: counter(item);
+      display: block;
+      color: white;
+    }
+
+    .item.w2 { width:  100px; }
+    .item.h2 { height: 100px; }
+    .item.w4 { width:  200px; }
+    .item.h4 { height: 200px; }
+
+    #square-col-row2 .grid-sizer,
+    #square-col-row2-horiz .grid-sizer {
+      width: 70px;
+      height: 80px;
+    }
+
+    .stamp {
+      position: absolute;
+      background: red;
+      border: 1px solid;
+    }
+
+    .stamp1 {
+      left: 30%;
+      top: -10px;
+      width: 40%;
+      height: 100px;
+    }
+
+    .stamp2 {
+      right: 200px;
+      top: 30px;
+      width: 300px;
+      height: 100px;
+    }
+
+    .horizontal .stamp1 {
+      left: 100px;
+      width: 400px;
+    }
+
+    .horizontal .stamp2 {
+      right: auto;
+      top: auto;
+      bottom: 10px;;
+      
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <h1>stamp</h1>
+
+  <div id="square1" class="container">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-gutter" class="container">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row1" class="container">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row2" class="container">
+    <div class="grid-sizer"></div>
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-horiz" class="container horizontal">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-gutter-horiz" class="container horizontal">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row1-horiz" class="container horizontal">
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+  <div id="square-col-row2-horiz" class="container horizontal">
+    <div class="grid-sizer"></div>
+    <div class="stamp stamp1"></div>
+    <div class="stamp stamp2"></div>
+    <div class="item w4"></div>
+    <div class="item h4"></div>
+    <div class="item w2"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item w4"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item w2 h2"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item h4"></div>
+    <div class="item"></div>
+    <div class="item w4"></div>
+    <div class="item"></div>
+    <div class="item w2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+    <div class="item"></div>
+    <div class="item h2"></div>
+  </div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/doc-ready/doc-ready.js"></script>
+<script src="../bower_components/classie/classie.js"></script>
+<script src="../bower_components/outlayer/item.js"></script>
+<script src="../bower_components/outlayer/outlayer.js"></script>
+
+<script src="../bower_components/isotope/js/layout-mode.js"></script>
+<script src="../bower_components/isotope/js/item.js"></script>
+<script src="../bower_components/isotope/js/isotope.js"></script>
+
+<script src="../bower_components/packery/js/rect.js"></script>
+<script src="../bower_components/packery/js/packer.js"></script>
+<script src="../bower_components/packery/js/item.js"></script>
+<script src="../bower_components/packery/js/packery.js"></script>
+
+<script src="../packery-mode.js"></script>
+
+<script>
+docReady( function() {
+
+  ( function() {
+    new Isotope( '#square1', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp'
+    });
+  })();
+  
+  ( function() {
+    new Isotope( '#square-gutter', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        gutter: 10
+      }
+    });
+  })();
+  
+  ( function() {
+    new Isotope( '#square-col-row1', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        columnWidth: 60,
+        rowHeight: 60
+      }
+    });
+  })();
+  
+  ( function() {
+    new Isotope( '#square-col-row2', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        columnWidth: '.grid-sizer',
+        rowHeight: '.grid-sizer'
+      }
+    });
+  })();
+
+  ( function() {
+    new Isotope( '#square-horiz', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        isHorizontal: true
+      }
+    });
+  })();
+
+  ( function() {
+    new Isotope( '#square-gutter-horiz', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        gutter: 10,
+        isHorizontal: true
+      }
+    });
+  })();
+  
+  ( function() {
+    new Isotope( '#square-col-row1-horiz', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        columnWidth: 60,
+        rowHeight: 60,
+        isHorizontal: true
+      }
+    });
+  })();
+  
+  ( function() {
+    new Isotope( '#square-col-row2-horiz', {
+      layoutMode: 'packery',
+      itemSelector: '.item',
+      stamp: '.stamp',
+      packery: {
+        columnWidth: '.grid-sizer',
+        rowHeight: '.grid-sizer',
+        isHorizontal: true
+      }
+    });
+  })();
+
+});
+</script>
+
+</body>
+</html>
