@@ -1,6 +1,6 @@
 {
   "name": "isotope-packery",
-  "main": "packery.js",
+  "main": "packery-mode.js",
   "version": "0.0.1",
   "authors": [
     "David DeSandro"
