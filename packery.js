@@ -62,6 +62,16 @@ function packeryDefinition( LayoutMode, Packery ) {
     _manageStamp.apply( this, arguments );
   };
 
+  PackeryMode.prototype.needsResizeLayout = function() {
+    // don't trigger if size did not change
+    var size = getSize( this.element );
+    // check that this.size and size are there
+    // IE8 triggers resize on body size change, so they might not be
+    var hasSizes = this.size && size;
+    var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
+    return hasSizes && size[ innerSize ] !== this.size[ innerSize ];
+  };
+
   return PackeryMode;
 }
 
