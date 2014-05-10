@@ -23,7 +23,7 @@ function extend( a, b ) {
 // -------------------------- masonryDefinition -------------------------- //
 
 // used for AMD definition and requires
-function packeryDefinition( LayoutMode, Packery ) {
+function packeryDefinition( LayoutMode, Packery, getSize ) {
   // create an Outlayer layout class
   var PackeryMode = LayoutMode.create('packery');
 
@@ -80,8 +80,9 @@ function packeryDefinition( LayoutMode, Packery ) {
 if ( typeof define === 'function' && define.amd ) {
   // AMD
   define( [
-      '../layout-mode',
-      'packery/packery'
+      'isotope/js/layout-mode',
+      'packery/packery',
+      'get-size/get-size'
     ],
     packeryDefinition );
 } else {
