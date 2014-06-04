@@ -1,7 +1,7 @@
 {
   "name": "isotope-packery",
   "main": "packery-mode.js",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "authors": [
     "David DeSandro"
   ],
