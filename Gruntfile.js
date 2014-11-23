@@ -30,7 +30,9 @@ module.exports = function( grunt ) {
         "undef": true,
         "unused": true,
         "predef": {
-          "define": false
+          "define": false,
+          "module": false,
+          "require": false
         }
       }
     },

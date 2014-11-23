@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode PACKAGED v0.1.0
+ * Packery layout mode PACKAGED v1.1.0
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -242,6 +242,9 @@ return Rect;
 if ( typeof define === 'function' && define.amd ) {
   // AMD
   define( 'packery/js/rect',rectDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = rectDefinition();
 } else {
   // browser global
   window.Packery = window.Packery || {};
@@ -329,10 +332,19 @@ Packer.prototype.placed = function( rect ) {
 
   this.spaces = revisedSpaces;
 
+  this.mergeSortSpaces();
+};
+
+Packer.prototype.mergeSortSpaces = function() {
   // remove redundant spaces
   Packer.mergeRects( this.spaces );
-
   this.spaces.sort( this.sorter );
+};
+
+// add a space back
+Packer.prototype.addSpace = function( rect ) {
+  this.spaces.push( rect );
+  this.mergeSortSpaces();
 };
 
 // -------------------------- utility functions -------------------------- //
@@ -399,6 +411,11 @@ return Packer;
 if ( typeof define === 'function' && define.amd ) {
   // AMD
   define( 'packery/js/packer',[ './rect' ], packerDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = packerDefinition(
+    require('./rect')
+  );
 } else {
   // browser global
   var Packery = window.Packery = window.Packery || {};
@@ -548,6 +565,18 @@ Item.prototype.copyPlaceRectPosition = function() {
   this.rect.y = this.placeRect.y;
 };
 
+// -----  ----- //
+
+// remove element from DOM
+Item.prototype.removeElem = function() {
+  this.element.parentNode.removeChild( this.element );
+  // add space back to packer
+  this.layout.packer.addSpace( this.rect );
+  this.emitEvent( 'remove', [ this ] );
+};
+
+// -----  ----- //
+
 return Item;
 
 }
@@ -562,6 +591,13 @@ if ( typeof define === 'function' && define.amd ) {
       './rect'
     ],
     itemDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = itemDefinition(
+    require('desandro-get-style-property'),
+    require('outlayer'),
+    require('./rect')
+  );
 } else {
   // browser global
   window.Packery.Item = itemDefinition(
@@ -574,7 +610,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /*!
- * Packery v1.2.2
+ * Packery v1.3.0
  * bin-packing layout library
  * http://packery.metafizzy.co
  *
@@ -583,7 +619,7 @@ if ( typeof define === 'function' && define.amd ) {
  *
  * Non-commercial use is licensed under the GPL v3 License
  *
- * Copyright 2013 Metafizzy
+ * Copyright 2014 Metafizzy
  */
 
 ( function( window ) {
@@ -715,10 +751,13 @@ Packery.prototype._setRectSize = function( elem, rect ) {
   var w = size.outerWidth;
   var h = size.outerHeight;
   // size for columnWidth and rowHeight, if available
-  var colW = this.columnWidth + this.gutter;
-  var rowH = this.rowHeight + this.gutter;
-  w = this.columnWidth ? Math.ceil( w / colW ) * colW : w + this.gutter;
-  h = this.rowHeight ? Math.ceil( h / rowH ) * rowH : h + this.gutter;
+  // only check if size is non-zero, #177
+  if ( w || h ) {
+    var colW = this.columnWidth + this.gutter;
+    var rowH = this.rowHeight + this.gutter;
+    w = this.columnWidth ? Math.ceil( w / colW ) * colW : w + this.gutter;
+    h = this.rowHeight ? Math.ceil( h / rowH ) * rowH : h + this.gutter;
+  }
   // rect must fit in packer
   rect.width = Math.min( w, this.packer.width );
   rect.height = Math.min( h, this.packer.height );
@@ -744,6 +783,7 @@ Packery.prototype._getContainerSize = function() {
  * @param {Element} elem
  */
 Packery.prototype._manageStamp = function( elem ) {
+
   var item = this.getItem( elem );
   var rect;
   if ( item && item.isPlacing ) {
@@ -1028,6 +1068,16 @@ if ( typeof define === 'function' && define.amd ) {
       './item'
     ],
     packeryDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = packeryDefinition(
+    require('desandro-classie'),
+    require('get-size'),
+    require('outlayer'),
+    require('./rect'),
+    require('./packer'),
+    require('./item')
+  );
 } else {
   // browser global
   window.Packery = packeryDefinition(
@@ -1043,7 +1093,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /*!
- * Packery layout mode v0.1.0
+ * Packery layout mode v1.1.0
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -1129,6 +1179,13 @@ if ( typeof define === 'function' && define.amd ) {
       'get-size/get-size'
     ],
     packeryDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = packeryDefinition(
+    require('isotope-layout/js/layout-mode'),
+    require('packery'),
+    require('get-size')
+  );
 } else {
   // browser global
   packeryDefinition(
