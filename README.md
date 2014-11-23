@@ -16,3 +16,5 @@ Download packaged source file
 + [packery-mode.pkgd.min.js](https://raw.githubusercontent.com/metafizzy/isotope-packery/master/packery-mode.pkgd.min.js)
 
 Install with [Bower :bird:](http://bower.io) `bower install isotope-packery`
+
+[Install with npm](https://www.npmjs.org/package/isotope-packery): `npm install isotope-packery`

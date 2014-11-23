@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode v1.0.0
+ * Packery layout mode v1.1.0
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -85,6 +85,13 @@ if ( typeof define === 'function' && define.amd ) {
       'get-size/get-size'
     ],
     packeryDefinition );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = packeryDefinition(
+    require('isotope-layout/js/layout-mode'),
+    require('packery'),
+    require('get-size')
+  );
 } else {
   // browser global
   packeryDefinition(
