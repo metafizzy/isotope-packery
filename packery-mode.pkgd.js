@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode PACKAGED v1.1.0
+ * Packery layout mode PACKAGED v1.1.1
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -610,7 +610,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /*!
- * Packery v1.3.0
+ * Packery v1.3.2
  * bin-packing layout library
  * http://packery.metafizzy.co
  *
@@ -619,17 +619,24 @@ if ( typeof define === 'function' && define.amd ) {
  *
  * Non-commercial use is licensed under the GPL v3 License
  *
- * Copyright 2014 Metafizzy
+ * Copyright 2015 Metafizzy
  */
 
 ( function( window ) {
 
 
 
-// -------------------------- Packery -------------------------- //
-
 // used for AMD definition and requires
 function packeryDefinition( classie, getSize, Outlayer, Rect, Packer, Item ) {
+
+// ----- Rect ----- //
+
+// allow for pixel rounding errors IE8-IE11 & Firefox; #227
+Rect.prototype.canFit = function( rect ) {
+  return this.width >= rect.width - 1 && this.height >= rect.height - 1;
+};
+
+// -------------------------- Packery -------------------------- //
 
 // create an Outlayer layout class
 var Packery = Outlayer.create('packery');
@@ -753,14 +760,31 @@ Packery.prototype._setRectSize = function( elem, rect ) {
   // size for columnWidth and rowHeight, if available
   // only check if size is non-zero, #177
   if ( w || h ) {
-    var colW = this.columnWidth + this.gutter;
-    var rowH = this.rowHeight + this.gutter;
-    w = this.columnWidth ? Math.ceil( w / colW ) * colW : w + this.gutter;
-    h = this.rowHeight ? Math.ceil( h / rowH ) * rowH : h + this.gutter;
+    w = this._applyGridGutter( w, this.columnWidth );
+    h = this._applyGridGutter( h, this.rowHeight );
   }
   // rect must fit in packer
   rect.width = Math.min( w, this.packer.width );
   rect.height = Math.min( h, this.packer.height );
+};
+
+/**
+ * fits item to columnWidth/rowHeight and adds gutter
+ * @param {Number} measurement - item width or height
+ * @param {Number} gridSize - columnWidth or rowHeight
+ * @returns measurement
+ */
+Packery.prototype._applyGridGutter = function( measurement, gridSize ) {
+  // just add gutter if no gridSize
+  if ( !gridSize ) {
+    return measurement + this.gutter;
+  }
+  gridSize += this.gutter;
+  // fit item to columnWidth/rowHeight
+  var remainder = measurement % gridSize;
+  var mathMethod = remainder && remainder < 1 ? 'round' : 'ceil';
+  measurement = Math[ mathMethod ]( measurement / gridSize ) * gridSize;
+  return measurement;
 };
 
 Packery.prototype._getContainerSize = function() {
@@ -1093,7 +1117,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /*!
- * Packery layout mode v1.1.0
+ * Packery layout mode v1.1.1
  * sub-classes Packery
  * http://packery.metafizzy.co
  */

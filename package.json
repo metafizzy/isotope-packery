@@ -1,6 +1,6 @@
 {
   "name": "isotope-packery",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "packery layout mode for Isotope",
   "main": "packery-mode.js",
   "dependencies": {
