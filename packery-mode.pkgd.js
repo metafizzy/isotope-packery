@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode PACKAGED v1.1.1
+ * Packery layout mode PACKAGED v1.1.2
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -95,16 +95,28 @@ if ( typeof define === 'function' && define.amd ) {
  * low-level utility class for basic geometry
  */
 
-( function( window ) {
+( function( window, factory ) {
+  
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'packery/js/rect',factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // browser global
+    window.Packery = window.Packery || {};
+    window.Packery.Rect = factory();
+  }
 
+}( window, function factory() {
 
 
 // -------------------------- Packery -------------------------- //
 
 // global namespace
 var Packery = window.Packery = function() {};
-
-function rectDefinition() {
 
 // -------------------------- Rect -------------------------- //
 
@@ -235,36 +247,34 @@ Rect.prototype.canFit = function( rect ) {
 
 return Rect;
 
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( 'packery/js/rect',rectDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = rectDefinition();
-} else {
-  // browser global
-  window.Packery = window.Packery || {};
-  window.Packery.Rect = rectDefinition();
-}
-
-})( window );
+}));
 
 /**
  * Packer
  * bin-packing algorithm
  */
 
-( function( window ) {
+( function( window, factory ) {
+  
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'packery/js/packer',[ './rect' ], factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('./rect')
+    );
+  } else {
+    // browser global
+    var Packery = window.Packery = window.Packery || {};
+    Packery.Packer = factory( Packery.Rect );
+  }
 
+}( window, function factory( Rect ) {
 
 
 // -------------------------- Packer -------------------------- //
-
-function packerDefinition( Rect ) {
 
 /**
  * @param {Number} width
@@ -404,37 +414,43 @@ var sorters = {
 
 return Packer;
 
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( 'packery/js/packer',[ './rect' ], packerDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = packerDefinition(
-    require('./rect')
-  );
-} else {
-  // browser global
-  var Packery = window.Packery = window.Packery || {};
-  Packery.Packer = packerDefinition( Packery.Rect );
-}
-
-})( window );
-
+}));
 /**
  * Packery Item Element
 **/
 
-( function( window ) {
+( function( window, factory ) {
+  
+  // universal module definition
 
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'packery/js/item',[
+        'get-style-property/get-style-property',
+        'outlayer/outlayer',
+        './rect'
+      ],
+      factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('desandro-get-style-property'),
+      require('outlayer'),
+      require('./rect')
+    );
+  } else {
+    // browser global
+    window.Packery.Item = factory(
+      window.getStyleProperty,
+      window.Outlayer,
+      window.Packery.Rect
+    );
+  }
+
+}( window, function factory( getStyleProperty, Outlayer, Rect ) {
 
 
 // -------------------------- Item -------------------------- //
-
-function itemDefinition( getStyleProperty, Outlayer, Rect ) {
 
 var transformProperty = getStyleProperty('transform');
 
@@ -488,8 +504,8 @@ Item.prototype.dragMove = function( x, y ) {
 
 Item.prototype.dragStop = function() {
   this.getPosition();
-  var isDiffX = this.position.x !== this.placeRect.x;
-  var isDiffY = this.position.y !== this.placeRect.y;
+  var isDiffX = this.position.x != this.placeRect.x;
+  var isDiffY = this.position.y != this.placeRect.y;
   // set post-drag positioning flag
   this.needsPositioning = isDiffX || isDiffY;
   // reset flag
@@ -579,55 +595,57 @@ Item.prototype.removeElem = function() {
 
 return Item;
 
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( 'packery/js/item',[
-      'get-style-property/get-style-property',
-      'outlayer/outlayer',
-      './rect'
-    ],
-    itemDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = itemDefinition(
-    require('desandro-get-style-property'),
-    require('outlayer'),
-    require('./rect')
-  );
-} else {
-  // browser global
-  window.Packery.Item = itemDefinition(
-    window.getStyleProperty,
-    window.Outlayer,
-    window.Packery.Rect
-  );
-}
-
-})( window );
+}));
 
 /*!
- * Packery v1.3.2
+ * Packery v1.4.1
  * bin-packing layout library
+ *
+ * Licensed GPLv3 for open source use
+ * or Flickity Commercial License for commercial use
+ *
  * http://packery.metafizzy.co
- *
- * Commercial use requires one-time purchase of a commercial license
- * http://packery.metafizzy.co/license.html
- *
- * Non-commercial use is licensed under the GPL v3 License
- *
  * Copyright 2015 Metafizzy
  */
 
-( function( window ) {
+( function( window, factory ) {
+  
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'packery/js/packery',[
+        'classie/classie',
+        'get-size/get-size',
+        'outlayer/outlayer',
+        './rect',
+        './packer',
+        './item'
+      ],
+      factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('desandro-classie'),
+      require('get-size'),
+      require('outlayer'),
+      require('./rect'),
+      require('./packer'),
+      require('./item')
+    );
+  } else {
+    // browser global
+    window.Packery = factory(
+      window.classie,
+      window.getSize,
+      window.Outlayer,
+      window.Packery.Rect,
+      window.Packery.Packer,
+      window.Packery.Item
+    );
+  }
 
+}( window, function factory( classie, getSize, Outlayer, Rect, Packer, Item ) {
 
-
-// used for AMD definition and requires
-function packeryDefinition( classie, getSize, Outlayer, Rect, Packer, Item ) {
 
 // ----- Rect ----- //
 
@@ -655,14 +673,14 @@ Packery.prototype._create = function() {
   // create drag handlers
   var _this = this;
   this.handleDraggabilly = {
-    dragStart: function( draggie ) {
-      _this.itemDragStart( draggie.element );
+    dragStart: function() {
+      _this.itemDragStart( this.element );
     },
-    dragMove: function( draggie ) {
-      _this.itemDragMove( draggie.element, draggie.position.x, draggie.position.y );
+    dragMove: function() {
+      _this.itemDragMove( this.element, this.position.x, this.position.y );
     },
-    dragEnd: function( draggie ) {
-      _this.itemDragEnd( draggie.element );
+    dragEnd: function() {
+      _this.itemDragEnd( this.element );
     }
   };
 
@@ -896,10 +914,10 @@ Packery.prototype._bindFitEvents = function( item ) {
   var ticks = 0;
   function tick() {
     ticks++;
-    if ( ticks !== 2 ) {
+    if ( ticks != 2 ) {
       return;
     }
-    _this.emitEvent( 'fitComplete', [ _this, item ] );
+    _this.emitEvent( 'fitComplete', [ item ] );
   }
   // when item is laid out
   item.on( 'layout', function() {
@@ -923,7 +941,7 @@ Packery.prototype.resize = function() {
   // IE8 triggers resize on body size change, so they might not be
   var hasSizes = this.size && size;
   var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
-  if ( hasSizes && size[ innerSize ] === this.size[ innerSize ] ) {
+  if ( hasSizes && size[ innerSize ] == this.size[ innerSize ] ) {
     return;
   }
 
@@ -1028,7 +1046,7 @@ Packery.prototype._getDragEndLayoutComplete = function( elem, item ) {
   return function onLayoutComplete() {
     completeCount++;
     // don't proceed if not complete
-    if ( completeCount !== asyncCount ) {
+    if ( completeCount != asyncCount ) {
       return true;
     }
     // reset item
@@ -1044,7 +1062,7 @@ Packery.prototype._getDragEndLayoutComplete = function( elem, item ) {
 
     // emit item drag event now that everything is done
     if ( itemNeedsPositioning ) {
-      _this.emitEvent( 'dragItemPositioned', [ _this, item ] );
+      _this.emitEvent( 'dragItemPositioned', [ item ] );
     }
     // listen once
     return true;
@@ -1077,55 +1095,44 @@ Packery.Packer = Packer;
 
 return Packery;
 
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( 'packery/js/packery',[
-      'classie/classie',
-      'get-size/get-size',
-      'outlayer/outlayer',
-      './rect',
-      './packer',
-      './item'
-    ],
-    packeryDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = packeryDefinition(
-    require('desandro-classie'),
-    require('get-size'),
-    require('outlayer'),
-    require('./rect'),
-    require('./packer'),
-    require('./item')
-  );
-} else {
-  // browser global
-  window.Packery = packeryDefinition(
-    window.classie,
-    window.getSize,
-    window.Outlayer,
-    window.Packery.Rect,
-    window.Packery.Packer,
-    window.Packery.Item
-  );
-}
-
-})( window );
+}));
 
 /*!
- * Packery layout mode v1.1.1
+ * Packery layout mode v1.1.2
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
 
 /*jshint browser: true, strict: true, undef: true, unused: true */
 
-( function( window ) {
+( function( window, factory ) {
+  
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+        'isotope/js/layout-mode',
+        'packery/js/packery',
+        'get-size/get-size'
+      ],
+      factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('isotope-layout/js/layout-mode'),
+      require('packery'),
+      require('get-size')
+    );
+  } else {
+    // browser global
+    factory(
+      window.Isotope.LayoutMode,
+      window.Packery,
+      window.getSize
+    );
+  }
 
+}( window, function factor( LayoutMode, Packery, getSize ) {
 
 
 // -------------------------- helpers -------------------------- //
@@ -1140,8 +1147,6 @@ function extend( a, b ) {
 
 // -------------------------- masonryDefinition -------------------------- //
 
-// used for AMD definition and requires
-function packeryDefinition( LayoutMode, Packery, getSize ) {
   // create an Outlayer layout class
   var PackeryMode = LayoutMode.create('packery');
 
@@ -1187,37 +1192,9 @@ function packeryDefinition( LayoutMode, Packery, getSize ) {
     // IE8 triggers resize on body size change, so they might not be
     var hasSizes = this.size && size;
     var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
-    return hasSizes && size[ innerSize ] !== this.size[ innerSize ];
+    return hasSizes && size[ innerSize ] != this.size[ innerSize ];
   };
 
   return PackeryMode;
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [
-      'isotope/js/layout-mode',
-      'packery/js/packery',
-      'get-size/get-size'
-    ],
-    packeryDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = packeryDefinition(
-    require('isotope-layout/js/layout-mode'),
-    require('packery'),
-    require('get-size')
-  );
-} else {
-  // browser global
-  packeryDefinition(
-    window.Isotope.LayoutMode,
-    window.Packery,
-    window.getSize
-  );
-}
-
-})( window );
+}));
 

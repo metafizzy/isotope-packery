@@ -1,13 +1,39 @@
 /*!
- * Packery layout mode v1.1.1
+ * Packery layout mode v1.1.2
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
 
 /*jshint browser: true, strict: true, undef: true, unused: true */
 
-( function( window ) {
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+        'isotope/js/layout-mode',
+        'packery/js/packery',
+        'get-size/get-size'
+      ],
+      factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('isotope-layout/js/layout-mode'),
+      require('packery'),
+      require('get-size')
+    );
+  } else {
+    // browser global
+    factory(
+      window.Isotope.LayoutMode,
+      window.Packery,
+      window.getSize
+    );
+  }
 
+}( window, function factor( LayoutMode, Packery, getSize ) {
 'use strict';
 
 // -------------------------- helpers -------------------------- //
@@ -22,8 +48,6 @@ function extend( a, b ) {
 
 // -------------------------- masonryDefinition -------------------------- //
 
-// used for AMD definition and requires
-function packeryDefinition( LayoutMode, Packery, getSize ) {
   // create an Outlayer layout class
   var PackeryMode = LayoutMode.create('packery');
 
@@ -69,36 +93,8 @@ function packeryDefinition( LayoutMode, Packery, getSize ) {
     // IE8 triggers resize on body size change, so they might not be
     var hasSizes = this.size && size;
     var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
-    return hasSizes && size[ innerSize ] !== this.size[ innerSize ];
+    return hasSizes && size[ innerSize ] != this.size[ innerSize ];
   };
 
   return PackeryMode;
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [
-      'isotope/js/layout-mode',
-      'packery/js/packery',
-      'get-size/get-size'
-    ],
-    packeryDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = packeryDefinition(
-    require('isotope-layout/js/layout-mode'),
-    require('packery'),
-    require('get-size')
-  );
-} else {
-  // browser global
-  packeryDefinition(
-    window.Isotope.LayoutMode,
-    window.Packery,
-    window.getSize
-  );
-}
-
-})( window );
+}));
