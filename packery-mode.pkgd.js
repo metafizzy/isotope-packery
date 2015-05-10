@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode PACKAGED v1.1.2
+ * Packery layout mode PACKAGED v1.1.3
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
@@ -1098,7 +1098,7 @@ return Packery;
 }));
 
 /*!
- * Packery layout mode v1.1.2
+ * Packery layout mode v1.1.3
  * sub-classes Packery
  * http://packery.metafizzy.co
  */
