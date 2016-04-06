@@ -50,10 +50,11 @@
     }
   }
 
-  // set packery in _resetLayout
+  // set packer in _resetLayout
   var _resetLayout = proto._resetLayout;
   proto._resetLayout = function() {
     this.packer = this.packer || new Packery.Packer();
+    this.shiftPacker = this.shiftPacker || new Packery.Packer();
     _resetLayout.apply( this, arguments );
   };
 

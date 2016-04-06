@@ -3,7 +3,7 @@
 See [docs for packery layout mode](http://isotope.metafizzy.co/layout-modes/packery.html)
 
 ``` js
-$('#container').isotope({
+$('.grid').isotope({
   layoutMode: 'packery'
 });
 ```
