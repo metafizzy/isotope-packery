@@ -1,7 +1,6 @@
 /*!
- * Packery layout mode v1.1.3
+ * Packery layout mode v2.0.0
  * sub-classes Packery
- * http://packery.metafizzy.co
  */
 
 /*jshint browser: true, strict: true, undef: true, unused: true */
@@ -30,7 +29,7 @@
     );
   }
 
-}( window, function factor( LayoutMode, Packery, getSize ) {
+}( window, function factor( LayoutMode, Packery ) {
 'use strict';
 
   // create an Outlayer layout class

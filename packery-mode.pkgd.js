@@ -1,94 +1,7 @@
 /*!
- * Packery layout mode PACKAGED v1.1.3
+ * Packery layout mode PACKAGED v2.0.0
  * sub-classes Packery
- * http://packery.metafizzy.co
  */
-
-/*!
- * classie v1.0.1
- * class helper functions
- * from bonzo https://github.com/ded/bonzo
- * MIT license
- * 
- * classie.has( elem, 'my-class' ) -> true/false
- * classie.add( elem, 'my-new-class' )
- * classie.remove( elem, 'my-unwanted-class' )
- * classie.toggle( elem, 'my-class' )
- */
-
-/*jshint browser: true, strict: true, undef: true, unused: true */
-/*global define: false, module: false */
-
-( function( window ) {
-
-
-
-// class helper functions from bonzo https://github.com/ded/bonzo
-
-function classReg( className ) {
-  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-}
-
-// classList support for class management
-// altho to be fair, the api sucks because it won't accept multiple classes at once
-var hasClass, addClass, removeClass;
-
-if ( 'classList' in document.documentElement ) {
-  hasClass = function( elem, c ) {
-    return elem.classList.contains( c );
-  };
-  addClass = function( elem, c ) {
-    elem.classList.add( c );
-  };
-  removeClass = function( elem, c ) {
-    elem.classList.remove( c );
-  };
-}
-else {
-  hasClass = function( elem, c ) {
-    return classReg( c ).test( elem.className );
-  };
-  addClass = function( elem, c ) {
-    if ( !hasClass( elem, c ) ) {
-      elem.className = elem.className + ' ' + c;
-    }
-  };
-  removeClass = function( elem, c ) {
-    elem.className = elem.className.replace( classReg( c ), ' ' );
-  };
-}
-
-function toggleClass( elem, c ) {
-  var fn = hasClass( elem, c ) ? removeClass : addClass;
-  fn( elem, c );
-}
-
-var classie = {
-  // full names
-  hasClass: hasClass,
-  addClass: addClass,
-  removeClass: removeClass,
-  toggleClass: toggleClass,
-  // short names
-  has: hasClass,
-  add: addClass,
-  remove: removeClass,
-  toggle: toggleClass
-};
-
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( 'classie/classie',classie );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = classie;
-} else {
-  // browser global
-  window.classie = classie;
-}
-
-})( window );
 
 /**
  * Rect
@@ -96,12 +9,12 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ( function( window, factory ) {
-  
   // universal module definition
+  /* jshint strict: false */ /* globals define, module */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'packery/js/rect',factory );
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory();
   } else {
@@ -112,11 +25,6 @@ if ( typeof define === 'function' && define.amd ) {
 
 }( window, function factory() {
 
-
-// -------------------------- Packery -------------------------- //
-
-// global namespace
-var Packery = window.Packery = function() {};
 
 // -------------------------- Rect -------------------------- //
 
@@ -132,9 +40,6 @@ function Rect( props ) {
 
 }
 
-// make available
-Packery.Rect = Rect;
-
 Rect.defaults = {
   x: 0,
   y: 0,
@@ -142,12 +47,14 @@ Rect.defaults = {
   height: 0
 };
 
+var proto = Rect.prototype;
+
 /**
  * Determines whether or not this rectangle wholly encloses another rectangle or point.
  * @param {Rect} rect
  * @returns {Boolean}
 **/
-Rect.prototype.contains = function( rect ) {
+proto.contains = function( rect ) {
   // points don't have width or height
   var otherWidth = rect.width || 0;
   var otherHeight = rect.height || 0;
@@ -162,7 +69,7 @@ Rect.prototype.contains = function( rect ) {
  * @param {Rect} rect
  * @returns {Boolean}
 **/
-Rect.prototype.overlaps = function( rect ) {
+proto.overlaps = function( rect ) {
   var thisRight = this.x + this.width;
   var thisBottom = this.y + this.height;
   var rectRight = rect.x + rect.width;
@@ -179,7 +86,7 @@ Rect.prototype.overlaps = function( rect ) {
  * @param {Rect} rect - the overlapping rect
  * @returns {Array} freeRects - rects representing the area around the rect
 **/
-Rect.prototype.getMaximalFreeRects = function( rect ) {
+proto.getMaximalFreeRects = function( rect ) {
 
   // if no intersection, return false
   if ( !this.overlaps( rect ) ) {
@@ -241,7 +148,7 @@ Rect.prototype.getMaximalFreeRects = function( rect ) {
   return freeRects;
 };
 
-Rect.prototype.canFit = function( rect ) {
+proto.canFit = function( rect ) {
   return this.width >= rect.width && this.height >= rect.height;
 };
 
@@ -255,12 +162,12 @@ return Rect;
  */
 
 ( function( window, factory ) {
-  
   // universal module definition
+  /* jshint strict: false */ /* globals define, module, require */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'packery/js/packer',[ './rect' ], factory );
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       require('./rect')
@@ -290,9 +197,10 @@ function Packer( width, height, sortDirection ) {
   this.reset();
 }
 
-Packer.prototype.reset = function() {
+var proto = Packer.prototype;
+
+proto.reset = function() {
   this.spaces = [];
-  this.newSpaces = [];
 
   var initialSpace = new Rect({
     x: 0,
@@ -307,8 +215,8 @@ Packer.prototype.reset = function() {
 };
 
 // change x and y of rect to fit with in Packer's available spaces
-Packer.prototype.pack = function( rect ) {
-  for ( var i=0, len = this.spaces.length; i < len; i++ ) {
+proto.pack = function( rect ) {
+  for ( var i=0; i < this.spaces.length; i++ ) {
     var space = this.spaces[i];
     if ( space.canFit( rect ) ) {
       this.placeInSpace( rect, space );
@@ -317,7 +225,35 @@ Packer.prototype.pack = function( rect ) {
   }
 };
 
-Packer.prototype.placeInSpace = function( rect, space ) {
+proto.columnPack = function( rect ) {
+  for ( var i=0; i < this.spaces.length; i++ ) {
+    var space = this.spaces[i];
+    var canFitInSpaceColumn = space.x <= rect.x &&
+      space.x + space.width >= rect.x + rect.width &&
+      space.height >= rect.height - 0.01; // fudge number for rounding error
+    if ( canFitInSpaceColumn ) {
+      rect.y = space.y;
+      this.placed( rect );
+      break;
+    }
+  }
+};
+
+proto.rowPack = function( rect ) {
+  for ( var i=0; i < this.spaces.length; i++ ) {
+    var space = this.spaces[i];
+    var canFitInSpaceRow = space.y <= rect.y &&
+      space.y + space.height >= rect.y + rect.height &&
+      space.width >= rect.width - 0.01; // fudge number for rounding error
+    if ( canFitInSpaceRow ) {
+      rect.x = space.x;
+      this.placed( rect );
+      break;
+    }
+  }
+};
+
+proto.placeInSpace = function( rect, space ) {
   // place rect in space
   rect.x = space.x;
   rect.y = space.y;
@@ -326,10 +262,10 @@ Packer.prototype.placeInSpace = function( rect, space ) {
 };
 
 // update spaces with placed rect
-Packer.prototype.placed = function( rect ) {
+proto.placed = function( rect ) {
   // update spaces
   var revisedSpaces = [];
-  for ( var i=0, len = this.spaces.length; i < len; i++ ) {
+  for ( var i=0; i < this.spaces.length; i++ ) {
     var space = this.spaces[i];
     var newSpaces = space.getMaximalFreeRects( rect );
     // add either the original space or the new spaces to the revised spaces
@@ -345,14 +281,14 @@ Packer.prototype.placed = function( rect ) {
   this.mergeSortSpaces();
 };
 
-Packer.prototype.mergeSortSpaces = function() {
+proto.mergeSortSpaces = function() {
   // remove redundant spaces
   Packer.mergeRects( this.spaces );
   this.spaces.sort( this.sorter );
 };
 
 // add a space back
-Packer.prototype.addSpace = function( rect ) {
+proto.addSpace = function( rect ) {
   this.spaces.push( rect );
   this.mergeSortSpaces();
 };
@@ -365,30 +301,32 @@ Packer.prototype.addSpace = function( rect ) {
  * @returns {Array} rects: an array of Rects
 **/
 Packer.mergeRects = function( rects ) {
-  for ( var i=0, len = rects.length; i < len; i++ ) {
-    var rect = rects[i];
-    // skip over this rect if it was already removed
-    if ( !rect ) {
-      continue;
-    }
-    // clone rects we're testing, remove this rect
-    var compareRects = rects.slice(0);
-    // do not compare with self
-    compareRects.splice( i, 1 );
-    // compare this rect with others
-    var removedCount = 0;
-    for ( var j=0, jLen = compareRects.length; j < jLen; j++ ) {
-      var compareRect = compareRects[j];
-      // if this rect contains another,
-      // remove that rect from test collection
-      var indexAdjust = i > j ? 0 : 1;
-      if ( rect.contains( compareRect ) ) {
-        // console.log( 'current test rects:' + testRects.length, testRects );
-        // console.log( i, j, indexAdjust, rect, compareRect );
-        rects.splice( j + indexAdjust - removedCount, 1 );
-        removedCount++;
+  var i = 0;
+  var rect = rects[i];
+
+  rectLoop:
+  while ( rect ) {
+    var j = 0;
+    var compareRect = rects[ i + j ];
+
+    while ( compareRect ) {
+      if  ( compareRect == rect ) {
+        j++; // next
+      } else if ( compareRect.contains( rect ) ) {
+        // remove rect
+        rects.splice( i, 1 );
+        rect = rects[i]; // set next rect
+        continue rectLoop; // bail on compareLoop
+      } else if ( rect.contains( compareRect ) ) {
+        // remove compareRect
+        rects.splice( i + j, 1 );
+      } else {
+        j++;
       }
+      compareRect = rects[ i + j ]; // set next compareRect
     }
+    i++;
+    rect = rects[i];
   }
 
   return rects;
@@ -415,180 +353,126 @@ var sorters = {
 return Packer;
 
 }));
+
 /**
  * Packery Item Element
 **/
 
 ( function( window, factory ) {
-  
   // universal module definition
-
+  /* jshint strict: false */ /* globals define, module, require */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'packery/js/item',[
-        'get-style-property/get-style-property',
         'outlayer/outlayer',
         './rect'
       ],
       factory );
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      require('desandro-get-style-property'),
       require('outlayer'),
       require('./rect')
     );
   } else {
     // browser global
     window.Packery.Item = factory(
-      window.getStyleProperty,
       window.Outlayer,
       window.Packery.Rect
     );
   }
 
-}( window, function factory( getStyleProperty, Outlayer, Rect ) {
+}( window, function factory( Outlayer, Rect ) {
 
 
 // -------------------------- Item -------------------------- //
 
-var transformProperty = getStyleProperty('transform');
+var docElemStyle = document.documentElement.style;
+
+var transformProperty = typeof docElemStyle.transform == 'string' ?
+  'transform' : 'WebkitTransform';
 
 // sub-class Item
 var Item = function PackeryItem() {
   Outlayer.Item.apply( this, arguments );
 };
 
-Item.prototype = new Outlayer.Item();
+var proto = Item.prototype = Object.create( Outlayer.Item.prototype );
 
-var protoCreate = Item.prototype._create;
-Item.prototype._create = function() {
+var __create = proto._create;
+proto._create = function() {
   // call default _create logic
-  protoCreate.call( this );
+  __create.call( this );
   this.rect = new Rect();
-  // rect used for placing, in drag or Packery.fit()
-  this.placeRect = new Rect();
 };
 
-// -------------------------- drag -------------------------- //
+var _moveTo = proto.moveTo;
+proto.moveTo = function( x, y ) {
+  // don't shift 1px while dragging
+  var dx = Math.abs( this.position.x - x );
+  var dy = Math.abs( this.position.y - y );
 
-Item.prototype.dragStart = function() {
-  this.getPosition();
+  var canHackGoTo = this.layout.dragItemCount && !this.isPlacing &&
+    !this.isTransitioning && dx < 1 && dy < 1;
+  if ( canHackGoTo ) {
+    this.goTo( x, y );
+    return;
+  }
+  _moveTo.apply( this, arguments );
+};
+
+// -------------------------- placing -------------------------- //
+
+proto.enablePlacing = function() {
   this.removeTransitionStyles();
   // remove transform property from transition
   if ( this.isTransitioning && transformProperty ) {
     this.element.style[ transformProperty ] = 'none';
   }
-  this.getSize();
-  // create place rect, used for position when dragged then dropped
-  // or when positioning
-  this.isPlacing = true;
-  this.needsPositioning = false;
-  this.positionPlaceRect( this.position.x, this.position.y );
   this.isTransitioning = false;
-  this.didDrag = false;
+  this.getSize();
+  this.layout._setRectSize( this.element, this.rect );
+  this.isPlacing = true;
 };
 
-/**
- * handle item when it is dragged
- * @param {Number} x - horizontal position of dragged item
- * @param {Number} y - vertical position of dragged item
- */
-Item.prototype.dragMove = function( x, y ) {
-  this.didDrag = true;
-  var packerySize = this.layout.size;
-  x -= packerySize.paddingLeft;
-  y -= packerySize.paddingTop;
-  this.positionPlaceRect( x, y );
-};
-
-Item.prototype.dragStop = function() {
-  this.getPosition();
-  var isDiffX = this.position.x != this.placeRect.x;
-  var isDiffY = this.position.y != this.placeRect.y;
-  // set post-drag positioning flag
-  this.needsPositioning = isDiffX || isDiffY;
-  // reset flag
-  this.didDrag = false;
-};
-
-// -------------------------- placing -------------------------- //
-
-/**
- * position a rect that will occupy space in the packer
- * @param {Number} x
- * @param {Number} y
- * @param {Boolean} isMaxYContained
- */
-Item.prototype.positionPlaceRect = function( x, y, isMaxYOpen ) {
-  this.placeRect.x = this.getPlaceRectCoord( x, true );
-  this.placeRect.y = this.getPlaceRectCoord( y, false, isMaxYOpen );
-};
-
-/**
- * get x/y coordinate for place rect
- * @param {Number} coord - x or y
- * @param {Boolean} isX
- * @param {Boolean} isMaxOpen - does not limit value to outer bound
- * @returns {Number} coord - processed x or y
- */
-Item.prototype.getPlaceRectCoord = function( coord, isX, isMaxOpen ) {
-  var measure = isX ? 'Width' : 'Height';
-  var size = this.size[ 'outer' + measure ];
-  var segment = this.layout[ isX ? 'columnWidth' : 'rowHeight' ];
-  var parentSize = this.layout.size[ 'inner' + measure ];
-
-  // additional parentSize calculations for Y
-  if ( !isX ) {
-    parentSize = Math.max( parentSize, this.layout.maxY );
-    // prevent gutter from bumping up height when non-vertical grid
-    if ( !this.layout.rowHeight ) {
-      parentSize -= this.layout.gutter;
-    }
-  }
-
-  var max;
-
-  if ( segment ) {
-    segment += this.layout.gutter;
-    // allow for last column to reach the edge
-    parentSize += isX ? this.layout.gutter : 0;
-    // snap to closest segment
-    coord = Math.round( coord / segment );
-    // contain to outer bound
-    // contain non-growing bound, allow growing bound to grow
-    var mathMethod;
-    if ( this.layout.options.isHorizontal ) {
-      mathMethod = !isX ? 'floor' : 'ceil';
-    } else {
-      mathMethod = isX ? 'floor' : 'ceil';
-    }
-    var maxSegments = Math[ mathMethod ]( parentSize / segment );
-    maxSegments -= Math.ceil( size / segment );
-    max = maxSegments;
-  } else {
-    max = parentSize - size;
-  }
-
-  coord = isMaxOpen ? coord : Math.min( coord, max );
-  coord *= segment || 1;
-
-  return Math.max( 0, coord );
-};
-
-Item.prototype.copyPlaceRectPosition = function() {
-  this.rect.x = this.placeRect.x;
-  this.rect.y = this.placeRect.y;
+proto.disablePlacing = function() {
+  this.isPlacing = false;
 };
 
 // -----  ----- //
 
 // remove element from DOM
-Item.prototype.removeElem = function() {
+proto.removeElem = function() {
   this.element.parentNode.removeChild( this.element );
   // add space back to packer
   this.layout.packer.addSpace( this.rect );
   this.emitEvent( 'remove', [ this ] );
+};
+
+// ----- dropPlaceholder ----- //
+
+proto.showDropPlaceholder = function() {
+  var dropPlaceholder = this.dropPlaceholder;
+  if ( !dropPlaceholder ) {
+    // create dropPlaceholder
+    dropPlaceholder = this.dropPlaceholder = document.createElement('div');
+    dropPlaceholder.className = 'packery-drop-placeholder';
+    dropPlaceholder.style.position = 'absolute';
+  }
+
+  dropPlaceholder.style.width = this.size.width + 'px';
+  dropPlaceholder.style.height = this.size.height + 'px';
+  this.positionDropPlaceholder();
+  this.layout.element.appendChild( dropPlaceholder );
+};
+
+proto.positionDropPlaceholder = function() {
+  this.dropPlaceholder.style[ transformProperty ] = 'translate(' +
+    this.rect.x + 'px, ' + this.rect.y + 'px)';
+};
+
+proto.hideDropPlaceholder = function() {
+  this.layout.element.removeChild( this.dropPlaceholder );
 };
 
 // -----  ----- //
@@ -598,23 +482,22 @@ return Item;
 }));
 
 /*!
- * Packery v1.4.1
- * bin-packing layout library
+ * Packery v2.0.0
+ * Gapless, draggable grid layouts
  *
  * Licensed GPLv3 for open source use
- * or Flickity Commercial License for commercial use
+ * or Packery Commercial License for commercial use
  *
  * http://packery.metafizzy.co
- * Copyright 2015 Metafizzy
+ * Copyright 2016 Metafizzy
  */
 
 ( function( window, factory ) {
-  
   // universal module definition
+  /* jshint strict: false */ /* globals define, module, require */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'packery/js/packery',[
-        'classie/classie',
         'get-size/get-size',
         'outlayer/outlayer',
         './rect',
@@ -622,10 +505,9 @@ return Item;
         './item'
       ],
       factory );
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      require('desandro-classie'),
       require('get-size'),
       require('outlayer'),
       require('./rect'),
@@ -635,7 +517,6 @@ return Item;
   } else {
     // browser global
     window.Packery = factory(
-      window.classie,
       window.getSize,
       window.Outlayer,
       window.Packery.Rect,
@@ -644,7 +525,7 @@ return Item;
     );
   }
 
-}( window, function factory( classie, getSize, Outlayer, Rect, Packer, Item ) {
+}( window, function factory( getSize, Outlayer, Rect, Packer, Item ) {
 
 
 // ----- Rect ----- //
@@ -660,15 +541,19 @@ Rect.prototype.canFit = function( rect ) {
 var Packery = Outlayer.create('packery');
 Packery.Item = Item;
 
-Packery.prototype._create = function() {
+var proto = Packery.prototype;
+
+proto._create = function() {
   // call super
   Outlayer.prototype._create.call( this );
 
   // initial properties
   this.packer = new Packer();
+  // packer for drop targets
+  this.shiftPacker = new Packer();
+  this.isEnabled = true;
 
-  // Left over from v1.0
-  this.stamp( this.options.stamped );
+  this.dragItemCount = 0;
 
   // create drag handlers
   var _this = this;
@@ -685,13 +570,23 @@ Packery.prototype._create = function() {
   };
 
   this.handleUIDraggable = {
-    start: function handleUIDraggableStart( event ) {
+    start: function handleUIDraggableStart( event, ui ) {
+      // HTML5 may trigger dragstart, dismiss HTML5 dragging
+      if ( !ui ) {
+        return;
+      }
       _this.itemDragStart( event.currentTarget );
     },
     drag: function handleUIDraggableDrag( event, ui ) {
+      if ( !ui ) {
+        return;
+      }
       _this.itemDragMove( event.currentTarget, ui.position.left, ui.position.top );
     },
-    stop: function handleUIDraggableStop( event ) {
+    stop: function handleUIDraggableStop( event, ui ) {
+      if ( !ui ) {
+        return;
+      }
       _this.itemDragEnd( event.currentTarget );
     }
   };
@@ -704,25 +599,29 @@ Packery.prototype._create = function() {
 /**
  * logic before any new layout
  */
-Packery.prototype._resetLayout = function() {
+proto._resetLayout = function() {
   this.getSize();
 
   this._getMeasurements();
 
   // reset packer
-  var packer = this.packer;
+  var width, height, sortDirection;
   // packer settings, if horizontal or vertical
-  if ( this.options.isHorizontal ) {
-    packer.width = Number.POSITIVE_INFINITY;
-    packer.height = this.size.innerHeight + this.gutter;
-    packer.sortDirection = 'rightwardTopToBottom';
+  if ( this._getOption('horizontal') ) {
+    width = Infinity;
+    height = this.size.innerHeight + this.gutter;
+    sortDirection = 'rightwardTopToBottom';
   } else {
-    packer.width = this.size.innerWidth + this.gutter;
-    packer.height = Number.POSITIVE_INFINITY;
-    packer.sortDirection = 'downwardLeftToRight';
+    width = this.size.innerWidth + this.gutter;
+    height = Infinity;
+    sortDirection = 'downwardLeftToRight';
   }
 
-  packer.reset();
+  this.packer.width = this.shiftPacker.width = width;
+  this.packer.height = this.shiftPacker.height = height;
+  this.packer.sortDirection = this.shiftPacker.sortDirection = sortDirection;
+
+  this.packer.reset();
 
   // layout
   this.maxY = 0;
@@ -733,35 +632,42 @@ Packery.prototype._resetLayout = function() {
  * update columnWidth, rowHeight, & gutter
  * @private
  */
-Packery.prototype._getMeasurements = function() {
+proto._getMeasurements = function() {
   this._getMeasurement( 'columnWidth', 'width' );
   this._getMeasurement( 'rowHeight', 'height' );
   this._getMeasurement( 'gutter', 'width' );
 };
 
-Packery.prototype._getItemLayoutPosition = function( item ) {
-  this._packItem( item );
+proto._getItemLayoutPosition = function( item ) {
+  this._setRectSize( item.element, item.rect );
+  if ( this.isShifting || this.dragItemCount > 0 ) {
+    var packMethod = this._getPackMethod();
+    this.packer[ packMethod ]( item.rect );
+  } else {
+    this.packer.pack( item.rect );
+  }
+
+  this._setMaxXY( item.rect );
   return item.rect;
 };
 
-
-/**
- * layout item in packer
- * @param {Packery.Item} item
- */
-Packery.prototype._packItem = function( item ) {
-  this._setRectSize( item.element, item.rect );
-  // pack the rect in the packer
-  this.packer.pack( item.rect );
-  this._setMaxXY( item.rect );
+proto.shiftLayout = function() {
+  this.isShifting = true;
+  this.layout();
+  delete this.isShifting;
 };
+
+proto._getPackMethod = function() {
+  return this._getOption('horizontal') ? 'rowPack' : 'columnPack';
+};
+
 
 /**
  * set max X and Y value, for size of container
  * @param {Packery.Rect} rect
  * @private
  */
-Packery.prototype._setMaxXY = function( rect ) {
+proto._setMaxXY = function( rect ) {
   this.maxX = Math.max( rect.x + rect.width, this.maxX );
   this.maxY = Math.max( rect.y + rect.height, this.maxY );
 };
@@ -771,7 +677,7 @@ Packery.prototype._setMaxXY = function( rect ) {
  * @param {Element} elem
  * @param {Packery.Rect} rect
  */
-Packery.prototype._setRectSize = function( elem, rect ) {
+proto._setRectSize = function( elem, rect ) {
   var size = getSize( elem );
   var w = size.outerWidth;
   var h = size.outerHeight;
@@ -792,7 +698,7 @@ Packery.prototype._setRectSize = function( elem, rect ) {
  * @param {Number} gridSize - columnWidth or rowHeight
  * @returns measurement
  */
-Packery.prototype._applyGridGutter = function( measurement, gridSize ) {
+proto._applyGridGutter = function( measurement, gridSize ) {
   // just add gutter if no gridSize
   if ( !gridSize ) {
     return measurement + this.gutter;
@@ -805,8 +711,8 @@ Packery.prototype._applyGridGutter = function( measurement, gridSize ) {
   return measurement;
 };
 
-Packery.prototype._getContainerSize = function() {
-  if ( this.options.isHorizontal ) {
+proto._getContainerSize = function() {
+  if ( this._getOption('horizontal') ) {
     return {
       width: this.maxX - this.gutter
     };
@@ -824,17 +730,17 @@ Packery.prototype._getContainerSize = function() {
  * makes space for element
  * @param {Element} elem
  */
-Packery.prototype._manageStamp = function( elem ) {
+proto._manageStamp = function( elem ) {
 
   var item = this.getItem( elem );
   var rect;
   if ( item && item.isPlacing ) {
-    rect = item.placeRect;
+    rect = item.rect;
   } else {
     var offset = this._getElementOffset( elem );
     rect = new Rect({
-      x: this.options.isOriginLeft ? offset.left : offset.right,
-      y: this.options.isOriginTop ? offset.top : offset.bottom
+      x: this._getOption('originLeft') ? offset.left : offset.right,
+      y: this._getOption('originTop') ? offset.top : offset.bottom
     });
   }
 
@@ -854,8 +760,8 @@ function horizontalSorter( a, b ) {
   return a.position.x - b.position.x || a.position.y - b.position.y;
 }
 
-Packery.prototype.sortItemsByPosition = function() {
-  var sorter = this.options.isHorizontal ? horizontalSorter : verticalSorter;
+proto.sortItemsByPosition = function() {
+  var sorter = this._getOption('horizontal') ? horizontalSorter : verticalSorter;
   this.items.sort( sorter );
 };
 
@@ -868,40 +774,30 @@ Packery.prototype.sortItemsByPosition = function() {
  * @param {Number} x - horizontal destination position, optional
  * @param {Number} y - vertical destination position, optional
  */
-Packery.prototype.fit = function( elem, x, y ) {
+proto.fit = function( elem, x, y ) {
   var item = this.getItem( elem );
   if ( !item ) {
     return;
   }
 
-  // prepare internal properties
-  this._getMeasurements();
-
   // stamp item to get it out of layout
   this.stamp( item.element );
-  // required for positionPlaceRect
-  item.getSize();
   // set placing flag
-  item.isPlacing = true;
+  item.enablePlacing();
+  this.updateShiftTargets( item );
   // fall back to current position for fitting
   x = x === undefined ? item.rect.x: x;
   y = y === undefined ? item.rect.y: y;
-
   // position it best at its destination
-  item.positionPlaceRect( x, y, true );
-
+  this.shift( item, x, y );
   this._bindFitEvents( item );
-  item.moveTo( item.placeRect.x, item.placeRect.y );
+  item.moveTo( item.rect.x, item.rect.y );
   // layout everything else
-  this.layout();
-
+  this.shiftLayout();
   // return back to regularly scheduled programming
   this.unstamp( item.element );
   this.sortItemsByPosition();
-  // un set placing flag, back to normal
-  item.isPlacing = false;
-  // copy place rect position
-  item.copyPlaceRectPosition();
+  item.disablePlacing();
 };
 
 /**
@@ -909,43 +805,78 @@ Packery.prototype.fit = function( elem, x, y ) {
  * @param {Packery.Item} item
  * @private
  */
-Packery.prototype._bindFitEvents = function( item ) {
+proto._bindFitEvents = function( item ) {
   var _this = this;
   var ticks = 0;
-  function tick() {
+  function onLayout() {
     ticks++;
     if ( ticks != 2 ) {
       return;
     }
-    _this.emitEvent( 'fitComplete', [ item ] );
+    _this.dispatchEvent( 'fitComplete', null, [ item ] );
   }
   // when item is laid out
-  item.on( 'layout', function() {
-    tick();
-    return true;
-  });
+  item.once( 'layout', onLayout );
   // when all items are laid out
-  this.on( 'layoutComplete', function() {
-    tick();
-    return true;
-  });
+  this.once( 'layoutComplete', onLayout );
 };
 
 // -------------------------- resize -------------------------- //
 
 // debounced, layout on resize
-Packery.prototype.resize = function() {
+proto.resize = function() {
   // don't trigger if size did not change
-  var size = getSize( this.element );
-  // check that this.size and size are there
-  // IE8 triggers resize on body size change, so they might not be
-  var hasSizes = this.size && size;
-  var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
-  if ( hasSizes && size[ innerSize ] == this.size[ innerSize ] ) {
+  // or if resize was unbound. See #285, outlayer#9
+  if ( !this.isResizeBound || !this.needsResizeLayout() ) {
     return;
   }
 
-  this.layout();
+  if ( this.options.shiftPercentResize ) {
+    this.resizeShiftPercentLayout();
+  } else {
+    this.layout();
+  }
+};
+
+/**
+ * check if layout is needed post layout
+ * @returns Boolean
+ */
+proto.needsResizeLayout = function() {
+  var size = getSize( this.element );
+  var innerSize = this._getOption('horizontal') ? 'innerHeight' : 'innerWidth';
+  return size[ innerSize ] != this.size[ innerSize ];
+};
+
+proto.resizeShiftPercentLayout = function() {
+  var items = this._getItemsForLayout( this.items );
+
+  var isHorizontal = this._getOption('horizontal');
+  var coord = isHorizontal ? 'y' : 'x';
+  var measure = isHorizontal ? 'height' : 'width';
+  var segmentName = isHorizontal ? 'rowHeight' : 'columnWidth';
+  var innerSize = isHorizontal ? 'innerHeight' : 'innerWidth';
+
+  // proportional re-align items
+  var previousSegment = this[ segmentName ];
+  previousSegment = previousSegment && previousSegment + this.gutter;
+
+  if ( previousSegment ) {
+    this._getMeasurements();
+    var currentSegment = this[ segmentName ] + this.gutter;
+    items.forEach( function( item ) {
+      var seg = Math.round( item.rect[ coord ] / previousSegment );
+      item.rect[ coord ] = seg * currentSegment;
+    });
+  } else {
+    var currentSize = getSize( this.element )[ innerSize ] + this.gutter;
+    var previousSize = this.packer[ measure ];
+    items.forEach( function( item ) {
+      item.rect[ coord ] = ( item.rect[ coord ] / previousSize ) * currentSize;
+    });
+  }
+
+  this.shiftLayout();
 };
 
 // -------------------------- drag -------------------------- //
@@ -954,13 +885,139 @@ Packery.prototype.resize = function() {
  * handle an item drag start event
  * @param {Element} elem
  */
-Packery.prototype.itemDragStart = function( elem ) {
-  this.stamp( elem );
-  var item = this.getItem( elem );
-  if ( item ) {
-    item.dragStart();
+proto.itemDragStart = function( elem ) {
+  if ( !this.isEnabled ) {
+    return;
   }
+  this.stamp( elem );
+  // this.ignore( elem );
+  var item = this.getItem( elem );
+  if ( !item ) {
+    return;
+  }
+
+  item.enablePlacing();
+  item.showDropPlaceholder();
+  this.dragItemCount++;
+  this.updateShiftTargets( item );
 };
+
+proto.updateShiftTargets = function( dropItem ) {
+  this.shiftPacker.reset();
+
+  // pack stamps
+  this._getBoundingRect();
+  var isOriginLeft = this._getOption('originLeft');
+  var isOriginTop = this._getOption('originTop');
+  this.stamps.forEach( function( stamp ) {
+    // ignore dragged item
+    var item = this.getItem( stamp );
+    if ( item && item.isPlacing ) {
+      return;
+    }
+    var offset = this._getElementOffset( stamp );
+    var rect = new Rect({
+      x: isOriginLeft ? offset.left : offset.right,
+      y: isOriginTop ? offset.top : offset.bottom
+    });
+    this._setRectSize( stamp, rect );
+    // save its space in the packer
+    this.shiftPacker.placed( rect );
+  }, this );
+
+  // reset shiftTargets
+  var isHorizontal = this._getOption('horizontal');
+  var segmentName = isHorizontal ? 'rowHeight' : 'columnWidth';
+  var measure = isHorizontal ? 'height' : 'width';
+
+  this.shiftTargetKeys = [];
+  this.shiftTargets = [];
+  var boundsSize;
+  var segment = this[ segmentName ];
+  segment = segment && segment + this.gutter;
+
+  if ( segment ) {
+    var segmentSpan = Math.ceil( dropItem.rect[ measure ] / segment );
+    var segs = Math.floor( ( this.shiftPacker[ measure ] + this.gutter ) / segment );
+    boundsSize = ( segs - segmentSpan ) * segment;
+    // add targets on top
+    for ( var i=0; i < segs; i++ ) {
+      this._addShiftTarget( i * segment, 0, boundsSize );
+    }
+  } else {
+    boundsSize = ( this.shiftPacker[ measure ] + this.gutter ) - dropItem.rect[ measure ];
+    this._addShiftTarget( 0, 0, boundsSize );
+  }
+
+  // pack each item to measure where shiftTargets are
+  var items = this._getItemsForLayout( this.items );
+  var packMethod = this._getPackMethod();
+  items.forEach( function( item ) {
+    var rect = item.rect;
+    this._setRectSize( item.element, rect );
+    this.shiftPacker[ packMethod ]( rect );
+
+    // add top left corner
+    this._addShiftTarget( rect.x, rect.y, boundsSize );
+    // add bottom left / top right corner
+    var cornerX = isHorizontal ? rect.x + rect.width : rect.x;
+    var cornerY = isHorizontal ? rect.y : rect.y + rect.height;
+    this._addShiftTarget( cornerX, cornerY, boundsSize );
+
+    if ( segment ) {
+      // add targets for each column on bottom / row on right
+      var segSpan = Math.round( rect[ measure ] / segment );
+      for ( var i=1; i < segSpan; i++ ) {
+        var segX = isHorizontal ? cornerX : rect.x + segment * i;
+        var segY = isHorizontal ? rect.y + segment * i : cornerY;
+        this._addShiftTarget( segX, segY, boundsSize );
+      }
+    }
+  }, this );
+
+};
+
+proto._addShiftTarget = function( x, y, boundsSize ) {
+  var checkCoord = this._getOption('horizontal') ? y : x;
+  if ( checkCoord !== 0 && checkCoord > boundsSize ) {
+    return;
+  }
+  // create string for a key, easier to keep track of what targets
+  var key = x + ',' + y;
+  var hasKey = this.shiftTargetKeys.indexOf( key ) != -1;
+  if ( hasKey ) {
+    return;
+  }
+  this.shiftTargetKeys.push( key );
+  this.shiftTargets.push({ x: x, y: y });
+};
+
+// -------------------------- drop -------------------------- //
+
+proto.shift = function( item, x, y ) {
+  var shiftPosition;
+  var minDistance = Infinity;
+  var position = { x: x, y: y };
+  this.shiftTargets.forEach( function( target ) {
+    var distance = getDistance( target, position );
+    if ( distance < minDistance ) {
+      shiftPosition = target;
+      minDistance = distance;
+    }
+  });
+  item.rect.x = shiftPosition.x;
+  item.rect.y = shiftPosition.y;
+};
+
+function getDistance( a, b ) {
+  var dx = b.x - a.x;
+  var dy = b.y - a.y;
+  return Math.sqrt( dx * dx + dy * dy );
+}
+
+// -------------------------- drag move -------------------------- //
+
+var DRAG_THROTTLE_TIME = 120;
 
 /**
  * handle an item drag move event
@@ -968,127 +1025,120 @@ Packery.prototype.itemDragStart = function( elem ) {
  * @param {Number} x - horizontal change in position
  * @param {Number} y - vertical change in position
  */
-Packery.prototype.itemDragMove = function( elem, x, y ) {
-  var item = this.getItem( elem );
-  if ( item ) {
-    item.dragMove( x, y );
+proto.itemDragMove = function( elem, x, y ) {
+  var item = this.isEnabled && this.getItem( elem );
+  if ( !item ) {
+    return;
   }
 
-  // debounce
+  x -= this.size.paddingLeft;
+  y -= this.size.paddingTop;
+
   var _this = this;
-  // debounce triggering layout
-  function delayed() {
+  function onDrag() {
+    _this.shift( item, x, y );
+    item.positionDropPlaceholder();
     _this.layout();
-    delete _this.dragTimeout;
   }
 
-  this.clearDragTimeout();
-
-  this.dragTimeout = setTimeout( delayed, 40 );
-};
-
-Packery.prototype.clearDragTimeout = function() {
-  if ( this.dragTimeout ) {
+  // throttle
+  var now = new Date();
+  if ( this._itemDragTime && now - this._itemDragTime < DRAG_THROTTLE_TIME ) {
     clearTimeout( this.dragTimeout );
+    this.dragTimeout = setTimeout( onDrag, DRAG_THROTTLE_TIME );
+  } else {
+    onDrag();
+    this._itemDragTime = now;
   }
 };
+
+// -------------------------- drag end -------------------------- //
 
 /**
  * handle an item drag end event
  * @param {Element} elem
  */
-Packery.prototype.itemDragEnd = function( elem ) {
-  var item = this.getItem( elem );
-  var itemDidDrag;
-  if ( item ) {
-    itemDidDrag = item.didDrag;
-    item.dragStop();
-  }
-  // if elem didn't move, or if it doesn't need positioning
-  // unignore and unstamp and call it a day
-  if ( !item || ( !itemDidDrag && !item.needsPositioning ) ) {
-    this.unstamp( elem );
+proto.itemDragEnd = function( elem ) {
+  var item = this.isEnabled && this.getItem( elem );
+  if ( !item ) {
     return;
   }
-  // procced with dragged item
 
-  classie.add( item.element, 'is-positioning-post-drag' );
+  clearTimeout( this.dragTimeout );
+  item.element.classList.add('is-positioning-post-drag');
 
-  // save this var, as it could get reset in dragStart
-  var onLayoutComplete = this._getDragEndLayoutComplete( elem, item );
-
-  if ( item.needsPositioning ) {
-    item.on( 'layout', onLayoutComplete );
-    item.moveTo( item.placeRect.x, item.placeRect.y );
-  } else if ( item ) {
-    // item didn't need placement
-    item.copyPlaceRectPosition();
+  var completeCount = 0;
+  var _this = this;
+  function onDragEndLayoutComplete() {
+    completeCount++;
+    if ( completeCount != 2 ) {
+      return;
+    }
+    // reset drag item
+    item.element.classList.remove('is-positioning-post-drag');
+    item.hideDropPlaceholder();
+    _this.dispatchEvent( 'dragItemPositioned', null, [ item ] );
   }
 
-  this.clearDragTimeout();
-  this.on( 'layoutComplete', onLayoutComplete );
+  item.once( 'layout', onDragEndLayoutComplete );
+  this.once( 'layoutComplete', onDragEndLayoutComplete );
+  item.moveTo( item.rect.x, item.rect.y );
   this.layout();
-
-};
-
-/**
- * get drag end callback
- * @param {Element} elem
- * @param {Packery.Item} item
- * @returns {Function} onLayoutComplete
- */
-Packery.prototype._getDragEndLayoutComplete = function( elem, item ) {
-  var itemNeedsPositioning = item && item.needsPositioning;
-  var completeCount = 0;
-  var asyncCount = itemNeedsPositioning ? 2 : 1;
-  var _this = this;
-
-  return function onLayoutComplete() {
-    completeCount++;
-    // don't proceed if not complete
-    if ( completeCount != asyncCount ) {
-      return true;
-    }
-    // reset item
-    if ( item ) {
-      classie.remove( item.element, 'is-positioning-post-drag' );
-      item.isPlacing = false;
-      item.copyPlaceRectPosition();
-    }
-
-    _this.unstamp( elem );
-    // only sort when item moved
-    _this.sortItemsByPosition();
-
-    // emit item drag event now that everything is done
-    if ( itemNeedsPositioning ) {
-      _this.emitEvent( 'dragItemPositioned', [ item ] );
-    }
-    // listen once
-    return true;
-  };
+  this.dragItemCount = Math.max( 0, this.dragItemCount - 1 );
+  this.sortItemsByPosition();
+  item.disablePlacing();
+  this.unstamp( item.element );
 };
 
 /**
  * binds Draggabilly events
  * @param {Draggabilly} draggie
  */
-Packery.prototype.bindDraggabillyEvents = function( draggie ) {
-  draggie.on( 'dragStart', this.handleDraggabilly.dragStart );
-  draggie.on( 'dragMove', this.handleDraggabilly.dragMove );
-  draggie.on( 'dragEnd', this.handleDraggabilly.dragEnd );
+proto.bindDraggabillyEvents = function( draggie ) {
+  this._bindDraggabillyEvents( draggie, 'on' );
+};
+
+proto.unbindDraggabillyEvents = function( draggie ) {
+  this._bindDraggabillyEvents( draggie, 'off' );
+};
+
+proto._bindDraggabillyEvents = function( draggie, method ) {
+  var handlers = this.handleDraggabilly;
+  draggie[ method ]( 'dragStart', handlers.dragStart );
+  draggie[ method ]( 'dragMove', handlers.dragMove );
+  draggie[ method ]( 'dragEnd', handlers.dragEnd );
 };
 
 /**
  * binds jQuery UI Draggable events
  * @param {jQuery} $elems
  */
-Packery.prototype.bindUIDraggableEvents = function( $elems ) {
-  $elems
-    .on( 'dragstart', this.handleUIDraggable.start )
-    .on( 'drag', this.handleUIDraggable.drag )
-    .on( 'dragstop', this.handleUIDraggable.stop );
+proto.bindUIDraggableEvents = function( $elems ) {
+  this._bindUIDraggableEvents( $elems, 'on' );
 };
+
+proto.unbindUIDraggableEvents = function( $elems ) {
+  this._bindUIDraggableEvents( $elems, 'off' );
+};
+
+proto._bindUIDraggableEvents = function( $elems, method ) {
+  var handlers = this.handleUIDraggable;
+  $elems
+    [ method ]( 'dragstart', handlers.start )
+    [ method ]( 'drag', handlers.drag )
+    [ method ]( 'dragstop', handlers.stop );
+};
+
+// ----- destroy ----- //
+
+var _destroy = proto.destroy;
+proto.destroy = function() {
+  _destroy.apply( this, arguments );
+  // disable flag; prevent drag events from triggering. #72
+  this.isEnabled = false;
+};
+
+// -----  ----- //
 
 Packery.Rect = Rect;
 Packery.Packer = Packer;
@@ -1098,9 +1148,8 @@ return Packery;
 }));
 
 /*!
- * Packery layout mode v1.1.3
+ * Packery layout mode v2.0.0
  * sub-classes Packery
- * http://packery.metafizzy.co
  */
 
 /*jshint browser: true, strict: true, undef: true, unused: true */
@@ -1112,89 +1161,79 @@ return Packery;
     // AMD
     define( [
         'isotope/js/layout-mode',
-        'packery/js/packery',
-        'get-size/get-size'
+        'packery/js/packery'
       ],
       factory );
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       require('isotope-layout/js/layout-mode'),
-      require('packery'),
-      require('get-size')
+      require('packery')
     );
   } else {
     // browser global
     factory(
       window.Isotope.LayoutMode,
-      window.Packery,
-      window.getSize
+      window.Packery
     );
   }
 
-}( window, function factor( LayoutMode, Packery, getSize ) {
+}( window, function factor( LayoutMode, Packery ) {
 
-
-// -------------------------- helpers -------------------------- //
-
-// extend objects
-function extend( a, b ) {
-  for ( var prop in b ) {
-    a[ prop ] = b[ prop ];
-  }
-  return a;
-}
-
-// -------------------------- masonryDefinition -------------------------- //
 
   // create an Outlayer layout class
   var PackeryMode = LayoutMode.create('packery');
+  var proto = PackeryMode.prototype;
 
-  // save on to these methods
-  var _getElementOffset = PackeryMode.prototype._getElementOffset;
-  // var layout = PackeryMode.prototype.layout;
-  var _getMeasurement = PackeryMode.prototype._getMeasurement;
+  var keepModeMethods = {
+    _getElementOffset: true,
+    _getMeasurement: true
+  };
 
-  // sub-class Masonry
-  extend( PackeryMode.prototype, Packery.prototype );
+  // inherit Packery prototype
+  for ( var method in Packery.prototype ) {
+    // do not inherit mode methods
+    if ( !keepModeMethods[ method ] ) {
+      proto[ method ] = Packery.prototype[ method ];
+    }
+  }
 
-  // set back, as it was overwritten by Packery
-  PackeryMode.prototype._getElementOffset = _getElementOffset;
-  // PackeryMode.prototype.layout = layout;
-  PackeryMode.prototype._getMeasurement = _getMeasurement;
-
-  // set packery in _resetLayout
-  var _resetLayout = PackeryMode.prototype._resetLayout;
-  PackeryMode.prototype._resetLayout = function() {
+  // set packer in _resetLayout
+  var _resetLayout = proto._resetLayout;
+  proto._resetLayout = function() {
     this.packer = this.packer || new Packery.Packer();
+    this.shiftPacker = this.shiftPacker || new Packery.Packer();
     _resetLayout.apply( this, arguments );
   };
 
-  var _getItemLayoutPosition = PackeryMode.prototype._getItemLayoutPosition;
-  PackeryMode.prototype._getItemLayoutPosition = function( item ) {
+  var _getItemLayoutPosition = proto._getItemLayoutPosition;
+  proto._getItemLayoutPosition = function( item ) {
     // set packery rect
     item.rect = item.rect || new Packery.Rect();
     return _getItemLayoutPosition.call( this, item );
   };
 
-  // HACK copy over isOriginLeft/Top options
-  var _manageStamp = PackeryMode.prototype._manageStamp;
-  PackeryMode.prototype._manageStamp = function() {
-    this.options.isOriginLeft = this.isotope.options.isOriginLeft;
-    this.options.isOriginTop = this.isotope.options.isOriginTop;
-    _manageStamp.apply( this, arguments );
+  // needsResizeLayout for vertical or horizontal
+  var _needsResizeLayout = proto.needsResizeLayout;
+  proto.needsResizeLayout = function() {
+    if ( this._getOption('horizontal') ) {
+      return this.needsVerticalResizeLayout();
+    } else {
+      return _needsResizeLayout.call( this );
+    }
   };
 
-  PackeryMode.prototype.needsResizeLayout = function() {
-    // don't trigger if size did not change
-    var size = getSize( this.element );
-    // check that this.size and size are there
-    // IE8 triggers resize on body size change, so they might not be
-    var hasSizes = this.size && size;
-    var innerSize = this.options.isHorizontal ? 'innerHeight' : 'innerWidth';
-    return hasSizes && size[ innerSize ] != this.size[ innerSize ];
+  // point to mode options for horizontal
+  var _getOption = proto._getOption;
+  proto._getOption = function( option ) {
+    if ( option == 'horizontal' ) {
+      return this.options.isHorizontal !== undefined ?
+        this.options.isHorizontal : this.options.horizontal;
+    }
+    return _getOption.apply( this.isotope, arguments );
   };
 
   return PackeryMode;
+
 }));
 
