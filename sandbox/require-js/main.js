@@ -68,7 +68,7 @@ requirejs.config({
 requirejs( [
     'require',
     'jquery',
-    '../../bower_components/isotope/dist/isotope.pkgd.js'
+    '../../bower_components/isotope-layout/dist/isotope.pkgd.js'
   ],
   function( require, $, Isotope ) {
     require( [

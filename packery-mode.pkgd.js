@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode PACKAGED v2.0.0
+ * Packery layout mode PACKAGED v2.0.1
  * sub-classes Packery
  */
 
@@ -1148,7 +1148,7 @@ return Packery;
 }));
 
 /*!
- * Packery layout mode v2.0.0
+ * Packery layout mode v2.0.1
  * sub-classes Packery
  */
 
@@ -1160,7 +1160,7 @@ return Packery;
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-        'isotope/js/layout-mode',
+        'isotope-layout/js/layout-mode',
         'packery/js/packery'
       ],
       factory );

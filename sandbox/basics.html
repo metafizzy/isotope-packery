@@ -158,9 +158,9 @@
 <script src="../bower_components/outlayer/item.js"></script>
 <script src="../bower_components/outlayer/outlayer.js"></script>
 
-<script src="../bower_components/isotope/js/layout-mode.js"></script>
-<script src="../bower_components/isotope/js/item.js"></script>
-<script src="../bower_components/isotope/js/isotope.js"></script>
+<script src="../bower_components/isotope-layout/js/layout-mode.js"></script>
+<script src="../bower_components/isotope-layout/js/item.js"></script>
+<script src="../bower_components/isotope-layout/js/isotope.js"></script>
 
 <script src="../bower_components/packery/js/rect.js"></script>
 <script src="../bower_components/packery/js/packer.js"></script>
@@ -171,33 +171,26 @@
 
 <script>
 
-  ( function() {
-    new Isotope( '#square1', {
+    var iso1 = new Isotope( '#square1', {
       layoutMode: 'packery'
     });
-  })();
 
-  ( function() {
-    new Isotope( '#square-gutter', {
+    var iso2 = new Isotope( '#square-gutter', {
       layoutMode: 'packery',
       packery: {
         gutter: 10
       }
     });
-  })();
 
-  ( function() {
-    new Isotope( '#square-col-row1', {
+    var iso3 = new Isotope( '#square-col-row1', {
       layoutMode: 'packery',
       packery: {
         columnWidth: 60,
         rowHeight: 60
       }
     });
-  })();
 
-  ( function() {
-    new Isotope( '#square-col-row2', {
+    var iso4 = new Isotope( '#square-col-row2', {
       layoutMode: 'packery',
       itemSelector: '.item',
       packery: {
@@ -205,7 +198,6 @@
         rowHeight: '.grid-sizer'
       }
     });
-  })();
 
 </script>
 

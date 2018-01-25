@@ -1,5 +1,5 @@
 /*!
- * Packery layout mode v2.0.0
+ * Packery layout mode v2.0.1
  * sub-classes Packery
  */
 
@@ -11,7 +11,7 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-        'isotope/js/layout-mode',
+        'isotope-layout/js/layout-mode',
         'packery/js/packery'
       ],
       factory );
@@ -29,7 +29,7 @@
     );
   }
 
-}( window, function factor( LayoutMode, Packery ) {
+}( window, function factory( LayoutMode, Packery ) {
 'use strict';
 
   // create an Outlayer layout class

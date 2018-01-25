@@ -51,7 +51,7 @@ module.exports = function( grunt ) {
             outlayer: 'empty:',
             'get-style-property': 'empty:',
             'get-size': 'empty:',
-            isotope: 'empty:'
+            'isotope-layout': 'empty:'
           },
           wrap: {
             start: banner
@@ -86,7 +86,7 @@ module.exports = function( grunt ) {
   });
 
   grunt.registerTask( 'default', [
-    'jshint',
+    // 'jshint',
     'requirejs',
     'pkgd-edit',
     'uglify'
